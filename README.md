@@ -27,8 +27,8 @@ Once in game the custom climb will act like a daily climb. All of the mods are a
 
 If when opening up **ModTheSpire** you **don't** see any checkboxes for letting you chose which mods are installed you need to resize the window to be bigger.
 
-![ModTheSpire Small](github_resources/modthespire_small)
-![ModTheSpire Large](github_resources/modthespire_large)
+![ModTheSpire Small](github_resources/modthespire_small.png)
+![ModTheSpire Large](github_resources/modthespire_large.png)
 
 ## Credits ##
 * Mod by test447
