@@ -25,5 +25,10 @@ Once in game the custom climb will act like a daily climb. All of the mods are a
 9. Your modded version of **Slay The Spire** can now be launched by double-clicking on `ModTheSpire.jar`
 10. This will open a mod select menu where you need to make sure that both `BaseMod` and `CustomClimb` are checked before clicking **play**
 
+If when opening up **ModTheSpire** you **don't** see any checkboxes for letting you chose which mods are installed you need to resize the window to be bigger.
+
+![ModTheSpire Small](github_resources/modthespire_small)
+![ModTheSpire Large](github_resources/modthespire_large)
+
 ## Credits ##
 * Mod by test447
