@@ -33,6 +33,7 @@ import basemod.ModButton;
 import basemod.ModLabel;
 import basemod.ModPanel;
 import basemod.interfaces.PostInitializeSubscriber;
+import customclimb.modifiers.Charity;
 
 @SpireInitializer
 public class CustomClimb implements PostInitializeSubscriber {
@@ -291,6 +292,8 @@ public class CustomClimb implements PostInitializeSubscriber {
 		appliedMods.add(possibleMods.remove(0));
 		appliedMods.add(possibleMods.remove(0));
 		appliedMods.add(possibleMods.remove(0));
+		
+		possibleMods.add(new Charity());
 		
 		calcPageMax();
 	}
