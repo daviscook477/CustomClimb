@@ -34,6 +34,7 @@ If when opening up **ModTheSpire** you **don't** see any checkboxes for letting 
 1. Fix bugs as they arise
 2. Allow for setting and sharing seeds (so you can have the exact same run as someone else or give someone a specific seed and set of modifiers as a challenge)
 3. Add more Daily modifier options so runs can be even more customized
+4. Make Custom Runs possible to be saved and reloaded
 
 ## Credits ##
 * Mod by test447
