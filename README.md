@@ -25,5 +25,16 @@ Once in game the custom climb will act like a daily climb. All of the mods are a
 9. Your modded version of **Slay The Spire** can now be launched by double-clicking on `ModTheSpire.jar`
 10. This will open a mod select menu where you need to make sure that both `BaseMod` and `CustomClimb` are checked before clicking **play**
 
+If when opening up **ModTheSpire** you **don't** see any checkboxes for letting you chose which mods are installed you need to resize the window to be bigger.
+
+![ModTheSpire Small](github_resources/modthespire_small.png)
+![ModTheSpire Large](github_resources/modthespire_large.png)
+
+## Roadmap ##
+1. Fix bugs as they arise
+2. Allow for setting and sharing seeds (so you can have the exact same run as someone else or give someone a specific seed and set of modifiers as a challenge)
+3. Add more Daily modifier options so runs can be even more customized
+4. Make Custom Runs possible to be saved and reloaded
+
 ## Credits ##
 * Mod by test447
