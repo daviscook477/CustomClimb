@@ -268,7 +268,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 		logger.info("begin setting up mods list");
 		
 		try {
-			Field modsField = ModHelper.class.getDeclaredField("mods");
+			Field modsField = ModHelper.class.getDeclaredField("negativeMods");
 			modsField.setAccessible(true);
 			
 			for (Map.Entry<String, AbstractDailyMod> m :
@@ -610,13 +610,13 @@ public class CustomClimb implements PostInitializeSubscriber {
 	
 	private void buildDailyMods() {
 		DailyMods.setModsFalse();
-		DailyMods.modList.clear();
-		DailyMods.modList.addAll(appliedMods);
+		DailyMods.enabledMods.clear();
+		DailyMods.enabledMods.addAll(appliedMods);
 		for (AbstractDailyMod m : appliedMods) {
 			if (m.positive) {
 				DailyMods.positiveMods.put(m.modID, true);
 			} else {
-				DailyMods.mods.put(m.modID, true);
+				DailyMods.negativeMods.put(m.modID, true);
 			}
 		}
 	}
