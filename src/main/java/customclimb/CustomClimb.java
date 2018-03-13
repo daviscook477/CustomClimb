@@ -32,6 +32,7 @@ import basemod.BaseMod;
 import basemod.ModButton;
 import basemod.ModLabel;
 import basemod.ModPanel;
+import basemod.ModTextPanel;
 import basemod.interfaces.PostInitializeSubscriber;
 import customclimb.modifiers.Charity;
 
@@ -48,6 +49,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 	private static final String BADGE_IMG = "badge.png";
 	private static final String PLUS_IMG = "plus.png";
 	private static final String MINUS_IMG = "minus.png";
+	private static final String SEED_IMG = "seed.png";
 
 	/**
 	 * Make path to resource
@@ -102,6 +104,8 @@ public class CustomClimb implements PostInitializeSubscriber {
 	public static final float CHAR_SELECT_X_START = 380.0f;
 	public static final float CHAR_SELECT_Y = 620.0f;
 	public static final float CHAR_SELECT_X_DELTA = 100.0f;
+	public static final float SEED_X = 1450.0f;
+	public static final float SEED_Y = 680.0f;
 	public static final String CONFIRM_BUTTON_TEXT = "Embark";
 	public static final String HEADER_TEXT = "Custom Climb";
 	public static final float POSSIBLE_MODS_HEADER_X = 1000.0f;
@@ -140,8 +144,8 @@ public class CustomClimb implements PostInitializeSubscriber {
 	public static final float APPLIED_PAGE_TEXT_X = 435.0f;
 	public static final float APPLIED_PAGE_TEXT_Y = 200.0f;
 	
-	public static final int POSSIBLE_PER_PAGE = 5;
-	public static final int APPLIED_PER_PAGE = 3;
+	public static final int POSSIBLE_PER_PAGE = 4;
+	public static final int APPLIED_PER_PAGE = 2;
 	
 	public ConfirmButton confirmButton;
 	private Object[] keys;
@@ -151,7 +155,8 @@ public class CustomClimb implements PostInitializeSubscriber {
 	private Texture plusTexture;
 	private Texture minusTexture;
 	private boolean setSeed = false;
-	private long seed = 0;
+	private static final long DEFAULT_SEED = 0;
+	private long seed = DEFAULT_SEED;
 	private ModPanel climbPanel;
 	
 	private ArrayList<AbstractDailyMod> possibleMods;
@@ -359,8 +364,8 @@ public class CustomClimb implements PostInitializeSubscriber {
 				@Override
 				public void render(SpriteBatch sb) {
 					super.render(sb);
-					confirmButton.render(sb);
 					renderMods(sb);
+					confirmButton.render(sb);
 				}
 				
 				@Override
@@ -472,9 +477,23 @@ public class CustomClimb implements PostInitializeSubscriber {
 					});
 			climbPanel.addButton(arrowRightApplied);
 			
+			// seed select button
+			ModButton seedButton = new ModButton(
+					SEED_X, SEED_Y,
+					new Texture(makePath(SEED_IMG)), climbPanel,
+					(me) -> {
+						BaseMod.openTextPanel(climbPanel, "Set the seed for the run", Long.toString(seed), Long.toString(DEFAULT_SEED), "Set the seed for the run", (panel) -> {
+							// do nothing - was cancelled
+						}, (panel) -> {
+							this.seed = Long.parseLong(ModTextPanel.textField);
+							this.setSeed = true;
+							System.out.println("seed was set to " + this.seed);
+						});
+					});
+			climbPanel.addButton(seedButton);
+			
 			// register mod badge
 			BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, climbPanel);
-
 			madeUI = true;
 		}
 	}
@@ -631,6 +650,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 		} else {
 			Settings.seed = Long.valueOf(new Random().nextLong());
 		}
+		System.out.println("starting game with seed: " + Settings.seed);
 		AbstractDungeon.generateSeeds();
 		
 		Settings.isDailyRun = true; // enable daily mods
