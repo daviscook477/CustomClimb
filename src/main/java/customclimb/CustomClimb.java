@@ -107,9 +107,9 @@ public class CustomClimb implements PostInitializeSubscriber {
 	public static final float CHAR_SELECT_X_DELTA = 100.0f;
 	public static final float SEED_X = 1450.0f;
 	public static final float SEED_Y = 680.0f;
-	public static final float CHAOTIC_RANDOM_X = 1400.0f;
+	public static final float CHAOTIC_RANDOM_X = 1350.0f;
 	public static final float CHAOTIC_RANDOM_Y = 680.0f;
-	public static final float BALANCED_RANDOM_X = 1350.0f;
+	public static final float BALANCED_RANDOM_X = 1250.0f;
 	public static final float BALANCED_RANDOM_Y = 680.0f;
 	public static final String CONFIRM_BUTTON_TEXT = "Embark";
 	public static final String HEADER_TEXT = "Custom Climb";
@@ -131,6 +131,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 	public static final float APPLIED_MODS_LIST_X_BUTTON = 870.0f;
 	public static final float MOD_LIST_LINE_WIDTH = 400.0f;
 	public static final float MOD_LIST_LINE_SPACING = 30.0f;
+	public static final float MOD_LIST_MIN_DELTA_Y = 80.0f;
 	
 	public static final float POSSIBLE_MODS_LEFT_ARROW_X = 1000.0f;
 	public static final float POSSIBLE_MODS_LEFT_ARROW_Y = 190.0f;
@@ -229,10 +230,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 			builder.append(": ");
 			builder.append(mod.description);
 			
-			y += FontHelper.getSmartHeight(FontHelper.charDescFont, builder.toString(),
-					MOD_LIST_LINE_WIDTH * Settings.scale,
-					MOD_LIST_LINE_SPACING * Settings.scale) -
-					POSSIBLE_MODS_LIST_Y_DELTA * Settings.scale;
+			y += calcSpacing(builder.toString());
 		}
 		
 		y = APPLIED_MODS_LIST_Y * Settings.scale;
@@ -260,10 +258,59 @@ public class CustomClimb implements PostInitializeSubscriber {
 			builder.append(": ");
 			builder.append(mod.description);
 			
-			y += FontHelper.getSmartHeight(FontHelper.charDescFont, builder.toString(),
-					MOD_LIST_LINE_WIDTH * Settings.scale,
-					MOD_LIST_LINE_SPACING * Settings.scale) -
-					APPLIED_MODS_LIST_Y_DELTA * Settings.scale;
+			y += calcSpacing(builder.toString());
+		}
+	}
+	
+	private void recalcHitboxes() {
+		float y = POSSIBLE_MODS_LIST_Y * Settings.scale;
+		
+		for (int i = 0; i < POSSIBLE_PER_PAGE; i++) {
+			if (!hasPossibleModAtPageIndex(i)) {
+				continue;
+			}
+			
+			possibleHB.get(i).y = y - 94.0f * Settings.scale + (HB_SHRINK * Settings.scale);
+			
+			AbstractDailyMod mod = getPossibleModAtPageIndex(i);
+			
+			StringBuilder builder = new StringBuilder();
+			
+			if (mod.positive) {
+				builder.append(FontHelper.colorString(mod.name, "g"));
+			} else {
+				builder.append(FontHelper.colorString(mod.name, "r"));
+			}
+			
+			builder.append(": ");
+			builder.append(mod.description);
+			
+			y += calcSpacing(builder.toString());
+		}
+		
+		y = APPLIED_MODS_LIST_Y * Settings.scale;
+		
+		for (int i = 0; i < APPLIED_PER_PAGE; i++) {
+			if (!hasAppliedModAtPageIndex(i)) {
+				continue;
+			}
+			
+			appliedHB.get(i).y = y - 94.0f * Settings.scale + (HB_SHRINK * Settings.scale);
+			
+			AbstractDailyMod mod = getAppliedModAtPageIndex(i);
+			
+			StringBuilder builder = new StringBuilder();
+			
+			if (mod.positive) {
+				builder.append(FontHelper.colorString(mod.name, "g"));
+			} else {
+				builder.append(FontHelper.colorString(mod.name, "r"));
+			}
+			
+			builder.append(": ");
+			builder.append(mod.description);
+			
+			y += calcSpacing(builder.toString());
 		}
 	}
 	
@@ -303,7 +350,6 @@ public class CustomClimb implements PostInitializeSubscriber {
 		appliedMods.add(possibleMods.remove(0));
 		appliedMods.add(possibleMods.remove(0));
 		appliedMods.add(possibleMods.remove(0));
-		
 		calcPageMax();
 	}
 	
@@ -314,10 +360,16 @@ public class CustomClimb implements PostInitializeSubscriber {
 	}
 	
 	private String buildPossiblePageText() {
+		if (maxPossiblePage == 0) {
+			return PAGE_TEXT + ": " + "0/0";
+		}
 		return PAGE_TEXT + ": " + (possiblePage + 1) + "/" + maxPossiblePage;
 	}
 	
 	private String buildAppliedPageText() {
+		if (maxAppliedPage == 0) {
+			return PAGE_TEXT + ": " + "0/0";
+		}
 		return PAGE_TEXT + ": " + (appliedPage + 1) + "/" + maxAppliedPage;
 	}
 	
@@ -501,7 +553,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 					CHAOTIC_RANDOM_X, CHAOTIC_RANDOM_Y,
 					new Texture(makePath(CHAOTIC_RANDOM_IMG)), climbPanel,
 					(me) -> {
-						BaseMod.openTextPanel(climbPanel, "How many modifiers?", Integer.toString(modAmount), Integer.toString(DEFAULT_MOD_AMOUNT), "How many modifiers?", (panel) -> {
+						BaseMod.openTextPanel(climbPanel, "Chaos!\n How many modifiers?", Integer.toString(modAmount), Integer.toString(DEFAULT_MOD_AMOUNT), "Chaos!\n How many modifiers?", (panel) -> {
 							// do nothing - was cancelled
 						}, (panel) -> {
 							this.modAmount = Integer.parseInt(ModTextPanel.textField);
@@ -515,7 +567,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 					BALANCED_RANDOM_X, BALANCED_RANDOM_Y,
 					new Texture(makePath(BALANCED_RANDOM_IMG)), climbPanel,
 					(me) -> {
-						BaseMod.openTextPanel(climbPanel, "How many modifiers?", Integer.toString(modAmount), Integer.toString(DEFAULT_MOD_AMOUNT), "How many modifiers?", (panel) -> {
+						BaseMod.openTextPanel(climbPanel, "Balance!\n How many modifiers?", Integer.toString(modAmount), Integer.toString(DEFAULT_MOD_AMOUNT), "Balance!\n How many modifiers?", (panel) -> {
 							// do nothing - was cancelled
 						}, (panel) -> {
 							this.modAmount = Integer.parseInt(ModTextPanel.textField);
@@ -540,10 +592,12 @@ public class CustomClimb implements PostInitializeSubscriber {
 		}
 		possiblePageLabel.text = buildPossiblePageText();
 		appliedPageLabel.text = buildAppliedPageText();
+		recalcHitboxes();
 	}
 	
 	private void updateHitboxes() {
 		int index = 0;
+		boolean changed = false;
 		for (Hitbox hb : possibleHB) {
 			if (index >= (possibleMods.size() - possiblePage * POSSIBLE_PER_PAGE )) continue;
 			
@@ -561,7 +615,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 				logger.info("possible mods " + index + " clicked");
 				hb.clicked = false;
 				appliedMods.add(possibleMods.remove(getPossiblePageIndex(index)));
-				fixPages();
+				changed = true;
 			}
 			index++;
 		}
@@ -583,9 +637,12 @@ public class CustomClimb implements PostInitializeSubscriber {
 				logger.info("applied mods " + index + " clicked");
 				hb.clicked = false;
 				possibleMods.add(appliedMods.remove(getAppliedPageIndex(index)));
-				fixPages();
+				changed = true;
 			}
 			index++;
+		}
+		if (changed) {
+			fixPages();
 		}
 	}
 	
@@ -618,8 +675,10 @@ public class CustomClimb implements PostInitializeSubscriber {
 		}
 		if (!balanced) {
 			for (int i = 0; i < amount; i++) {
-				int listPos = random.nextInt(possibleMods.size());
-				appliedMods.add(0, possibleMods.remove(listPos));
+				if (possibleMods.size() > 0) {
+					int listPos = random.nextInt(possibleMods.size());
+					appliedMods.add(0, possibleMods.remove(listPos));			
+				}
 			}
 		} else {
 			int positiveAmount = (int) (BALANCED_POSITIVE * amount);
@@ -629,18 +688,34 @@ public class CustomClimb implements PostInitializeSubscriber {
 			int negativeAmount = amount - positiveAmount;
 			setPositivesAndNegatives();
 			for (int i = 0; i < positiveAmount; i++) {
-				int listPos = random.nextInt(positives.size());
-				AbstractDailyMod positiveMod = positives.get(listPos);
-				appliedMods.add(positiveMod);
-				possibleMods.remove(positiveMod);
+				if (positives.size() > 0) {
+					int listPos = random.nextInt(positives.size());
+					AbstractDailyMod positiveMod = positives.remove(listPos);
+					appliedMods.add(positiveMod);
+					possibleMods.remove(positiveMod);
+				}
 			}
 			for (int i = 0; i < negativeAmount; i++) {
-				int listPos = random.nextInt(negatives.size());
-				AbstractDailyMod negativeMod = negatives.get(listPos);
-				appliedMods.add(negativeMod);
-				possibleMods.remove(negativeMod);
+				if (negatives.size() > 0) {
+					int listPos = random.nextInt(negatives.size());
+					AbstractDailyMod negativeMod = negatives.remove(listPos);
+					appliedMods.add(negativeMod);
+					possibleMods.remove(negativeMod);
+				}
 			}
 		}
+		fixPages();
+	}
+	
+	private float calcSpacing(String desc) {
+		float deltaY = FontHelper.getSmartHeight(FontHelper.charDescFont, desc,
+				MOD_LIST_LINE_WIDTH * Settings.scale,
+				MOD_LIST_LINE_SPACING * Settings.scale) -
+				APPLIED_MODS_LIST_Y_DELTA * Settings.scale;
+		if (deltaY > -1.0f * MOD_LIST_MIN_DELTA_Y * Settings.scale) {
+			deltaY = -1.0f * MOD_LIST_MIN_DELTA_Y * Settings.scale;
+		}
+		return deltaY;
 	}
 	
 	private void renderMods(SpriteBatch sb) {
@@ -673,10 +748,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 			sb.draw(plusTexture, POSSIBLE_MODS_LIST_X_BUTTON * Settings.scale, y - 94.0f * Settings.scale,
 					plusTexture.getWidth() * Settings.scale, plusTexture.getHeight() * Settings.scale);
 			
-			y += FontHelper.getSmartHeight(FontHelper.charDescFont, builder.toString(),
-					MOD_LIST_LINE_WIDTH * Settings.scale,
-					MOD_LIST_LINE_SPACING * Settings.scale) -
-					POSSIBLE_MODS_LIST_Y_DELTA * Settings.scale;
+			y += calcSpacing(builder.toString());
 		}
 		
 		y = APPLIED_MODS_LIST_Y * Settings.scale;
@@ -708,10 +780,8 @@ public class CustomClimb implements PostInitializeSubscriber {
 			sb.draw(minusTexture, APPLIED_MODS_LIST_X_BUTTON * Settings.scale, y - 94.0f * Settings.scale,
 					minusTexture.getWidth() * Settings.scale, minusTexture.getHeight() * Settings.scale);
 			
-			y += FontHelper.getSmartHeight(FontHelper.charDescFont, builder.toString(),
-					MOD_LIST_LINE_WIDTH * Settings.scale,
-					MOD_LIST_LINE_SPACING * Settings.scale) -
-					APPLIED_MODS_LIST_Y_DELTA * Settings.scale;
+			
+			y += calcSpacing(builder.toString());
 		}
 	}
 	
