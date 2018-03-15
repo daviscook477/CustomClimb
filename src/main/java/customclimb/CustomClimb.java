@@ -49,7 +49,9 @@ public class CustomClimb implements PostInitializeSubscriber {
 	private static final String PLUS_IMG = "plus.png";
 	private static final String MINUS_IMG = "minus.png";
 	private static final String SEED_IMG = "seed.png";
-
+	private static final String CHAOTIC_RANDOM_IMG = "chaotic_random.png";
+	private static final String BALANCED_RANDOM_IMG = "balanced_random.png";
+	
 	/**
 	 * Make path to resource
 	 * 
@@ -105,6 +107,10 @@ public class CustomClimb implements PostInitializeSubscriber {
 	public static final float CHAR_SELECT_X_DELTA = 100.0f;
 	public static final float SEED_X = 1450.0f;
 	public static final float SEED_Y = 680.0f;
+	public static final float CHAOTIC_RANDOM_X = 1400.0f;
+	public static final float CHAOTIC_RANDOM_Y = 680.0f;
+	public static final float BALANCED_RANDOM_X = 1350.0f;
+	public static final float BALANCED_RANDOM_Y = 680.0f;
 	public static final String CONFIRM_BUTTON_TEXT = "Embark";
 	public static final String HEADER_TEXT = "Custom Climb";
 	public static final float POSSIBLE_MODS_HEADER_X = 1000.0f;
@@ -157,6 +163,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 	private static final long DEFAULT_SEED = 0;
 	private long seed = DEFAULT_SEED;
 	private ModPanel climbPanel;
+	private int modAmount = DEFAULT_MOD_AMOUNT;
 	
 	private ArrayList<AbstractDailyMod> possibleMods;
 	private ArrayList<AbstractDailyMod> appliedMods = new ArrayList<>();
@@ -489,10 +496,50 @@ public class CustomClimb implements PostInitializeSubscriber {
 					});
 			climbPanel.addButton(seedButton);
 			
+			// chaotic random button
+			ModButton chaoticRandomButton = new ModButton(
+					CHAOTIC_RANDOM_X, CHAOTIC_RANDOM_Y,
+					new Texture(makePath(CHAOTIC_RANDOM_IMG)), climbPanel,
+					(me) -> {
+						BaseMod.openTextPanel(climbPanel, "How many modifiers?", Integer.toString(modAmount), Integer.toString(DEFAULT_MOD_AMOUNT), "How many modifiers?", (panel) -> {
+							// do nothing - was cancelled
+						}, (panel) -> {
+							this.modAmount = Integer.parseInt(ModTextPanel.textField);
+							randomizeMods(modAmount, false);
+						});
+					});
+			climbPanel.addButton(chaoticRandomButton);
+			
+			// balanced random button
+			ModButton balancedRandomButton = new ModButton(
+					BALANCED_RANDOM_X, BALANCED_RANDOM_Y,
+					new Texture(makePath(BALANCED_RANDOM_IMG)), climbPanel,
+					(me) -> {
+						BaseMod.openTextPanel(climbPanel, "How many modifiers?", Integer.toString(modAmount), Integer.toString(DEFAULT_MOD_AMOUNT), "How many modifiers?", (panel) -> {
+							// do nothing - was cancelled
+						}, (panel) -> {
+							this.modAmount = Integer.parseInt(ModTextPanel.textField);
+							randomizeMods(modAmount, true);
+						});
+					});
+			climbPanel.addButton(balancedRandomButton);
+			
 			// register mod badge
 			BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, climbPanel);
 			madeUI = true;
 		}
+	}
+	
+	private void fixPages() {
+		calcPageMax();
+		if (possiblePage >= maxPossiblePage && possiblePage > 0) {
+			possiblePage = maxPossiblePage - 1;
+		}
+		if (appliedPage >= maxAppliedPage && appliedPage > 0) {
+			appliedPage = maxAppliedPage - 1;
+		}
+		possiblePageLabel.text = buildPossiblePageText();
+		appliedPageLabel.text = buildAppliedPageText();
 	}
 	
 	private void updateHitboxes() {
@@ -514,12 +561,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 				logger.info("possible mods " + index + " clicked");
 				hb.clicked = false;
 				appliedMods.add(possibleMods.remove(getPossiblePageIndex(index)));
-				calcPageMax();
-				if (possiblePage >= maxPossiblePage && possiblePage > 0) {
-					possiblePage = maxPossiblePage - 1;
-				}
-				possiblePageLabel.text = buildPossiblePageText();
-				appliedPageLabel.text = buildAppliedPageText();
+				fixPages();
 			}
 			index++;
 		}
@@ -541,14 +583,63 @@ public class CustomClimb implements PostInitializeSubscriber {
 				logger.info("applied mods " + index + " clicked");
 				hb.clicked = false;
 				possibleMods.add(appliedMods.remove(getAppliedPageIndex(index)));
-				calcPageMax();
-				if (appliedPage >= maxAppliedPage && appliedPage > 0) {
-					appliedPage = maxAppliedPage - 1;
-				}
-				possiblePageLabel.text = buildPossiblePageText();
-				appliedPageLabel.text = buildAppliedPageText();
+				fixPages();
 			}
 			index++;
+		}
+	}
+	
+	public static final int DEFAULT_MOD_AMOUNT = 4;
+	public static final float BALANCED_POSITIVE = 0.25f;
+	
+	private ArrayList<AbstractDailyMod> positives;
+	private ArrayList<AbstractDailyMod> negatives;
+	
+	private void setPositivesAndNegatives() {
+		positives = null;
+		negatives = null;
+		positives = new ArrayList<>();
+		negatives = new ArrayList<>();
+		for (int i = 0; i < possibleMods.size(); i++) {
+			AbstractDailyMod mod = possibleMods.get(i);
+			if (mod.positive) {
+				positives.add(mod);
+			} else {
+				negatives.add(mod);
+			}
+		}
+	}
+	
+	private void randomizeMods(int amount, boolean balanced) {
+		Random random = new Random();
+		
+		while (appliedMods.size() > 0) {
+			possibleMods.add(0, appliedMods.remove(0));
+		}
+		if (!balanced) {
+			for (int i = 0; i < amount; i++) {
+				int listPos = random.nextInt(possibleMods.size());
+				appliedMods.add(0, possibleMods.remove(listPos));
+			}
+		} else {
+			int positiveAmount = (int) (BALANCED_POSITIVE * amount);
+			if (positiveAmount < 1 && amount >= 1) {
+				positiveAmount = 1;
+			}
+			int negativeAmount = amount - positiveAmount;
+			setPositivesAndNegatives();
+			for (int i = 0; i < positiveAmount; i++) {
+				int listPos = random.nextInt(positives.size());
+				AbstractDailyMod positiveMod = positives.get(listPos);
+				appliedMods.add(positiveMod);
+				possibleMods.remove(positiveMod);
+			}
+			for (int i = 0; i < negativeAmount; i++) {
+				int listPos = random.nextInt(negatives.size());
+				AbstractDailyMod negativeMod = negatives.get(listPos);
+				appliedMods.add(negativeMod);
+				possibleMods.remove(negativeMod);
+			}
 		}
 	}
 	
