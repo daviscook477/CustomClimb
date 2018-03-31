@@ -35,8 +35,8 @@ public class Charity extends AbstractDailyMod {
 		public static void Postfix(Object __obj_instance, ArrayList<AbstractCard> coloredCards,
 				ArrayList<AbstractCard> colorlessCards) {
 			ShopScreen screen = (ShopScreen) __obj_instance;
-			if (((Boolean) DailyMods.positiveMods.get("Charity")) != null
-					&& ((Boolean) DailyMods.positiveMods.get("Charity")).booleanValue()) {
+			if (((Boolean) DailyMods.cardMods.get("Charity")) != null
+					&& ((Boolean) DailyMods.cardMods.get("Charity")).booleanValue()) {
 				screen.applyDiscount(MODIFIER);
 			}
 		}
@@ -50,8 +50,8 @@ public class Charity extends AbstractDailyMod {
 		public static void Insert(Object __obj_instance, StoreRelic r, @ByRef int[] retVal) {
 			try {
 				ShopScreen screen = (ShopScreen) __obj_instance;
-				if (((Boolean) DailyMods.positiveMods.get("Charity")) != null
-						&& ((Boolean) DailyMods.positiveMods.get("Charity")).booleanValue()) {
+				if (((Boolean) DailyMods.cardMods.get("Charity")) != null
+						&& ((Boolean) DailyMods.cardMods.get("Charity")).booleanValue()) {
 					Method applyDiscountToRelic = screen.getClass().getDeclaredMethod("applyDiscountToRelic");
 					applyDiscountToRelic.setAccessible(true);
 					retVal[0] = (int) applyDiscountToRelic.invoke(screen, retVal[0], MODIFIER);
@@ -69,8 +69,8 @@ public class Charity extends AbstractDailyMod {
 		public static void Insert(Object __obj_instance, StorePotion p, @ByRef int[] retVal) {
 			try {
 				ShopScreen screen = (ShopScreen) __obj_instance;
-				if (((Boolean) DailyMods.positiveMods.get("Charity")) != null
-						&& ((Boolean) DailyMods.positiveMods.get("Charity")).booleanValue()) {
+				if (((Boolean) DailyMods.cardMods.get("Charity")) != null
+						&& ((Boolean) DailyMods.cardMods.get("Charity")).booleanValue()) {
 					Method applyDiscountToRelic = screen.getClass().getDeclaredMethod("applyDiscountToRelic");
 					applyDiscountToRelic.setAccessible(true);
 					retVal[0] = (int) applyDiscountToRelic.invoke(screen, retVal[0], MODIFIER);

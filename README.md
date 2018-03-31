@@ -25,6 +25,9 @@ If you want a bigger challenge, use the *Chaos* button to bring up the *Chaotic 
 
 Once in game the custom climb will act like a daily climb. All of the mods are applied **and** you will not be able to save and quit without losing your progress.
 
+## Known Bugs ##
+1. When using the Balanced, Chaos, and Seed buttons trying to click on accept and cancel doesn't work. The workaround is to use enter and escape instead.
+
 ## Installation ##
 1. If you have `ModTheSpire` already installed you can skip to step 5. Otherwise continue with step 2:
 2. Download `ModTheSpire.jar` from the latest release (https://github.com/kiooeht/ModTheSpire/releases)
