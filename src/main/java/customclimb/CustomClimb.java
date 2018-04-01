@@ -373,6 +373,14 @@ public class CustomClimb implements PostInitializeSubscriber {
 		return PAGE_TEXT + ": " + (appliedPage + 1) + "/" + maxAppliedPage;
 	}
 	
+	private ModButton makeCharacterButton(int index, Object playerKey, ModPanel me) {
+		String buttonPath = BaseMod.playerSelectButtonMap.get((String) playerKey);
+		return new ModButton(
+				CHAR_SELECT_X_START + CHAR_SELECT_X_DELTA * index,
+				CHAR_SELECT_Y, makeTexture(buttonPath, 0.5f),
+				me, (button) -> {doSelect(index);});
+	}
+	
 	private void buildUI() {
 		if (!madeUI) {
 			// setup mod lists
@@ -395,23 +403,20 @@ public class CustomClimb implements PostInitializeSubscriber {
 				ModButton ironclad = new ModButton(CHAR_SELECT_X_START, CHAR_SELECT_Y,
 						makeTexture("images/ui/charSelect/ironcladButton.png", 0.5f),
 						me, (button) -> {doSelect(0);});
-				me.addButton(ironclad);
+				me.addUIElement(ironclad);
 				
 				ModButton silent = new ModButton(CHAR_SELECT_X_START + CHAR_SELECT_X_DELTA, CHAR_SELECT_Y,
 						makeTexture("images/ui/charSelect/silentButton.png", 0.5f),
 						me, (button) -> {doSelect(1);});
-				me.addButton(silent);
+				me.addUIElement(silent);
 				
 				// custom characters
 				int index = 2; // 0 for ironclad, 1 for silent, 2+ for custom chars
 				keys = BaseMod.playerClassMap.keySet().toArray();
 				for (Object playerKey : keys) {
-					String buttonPath = BaseMod.playerSelectButtonMap.get((String) playerKey);
-					ModButton customCharacterButton = new ModButton(
-							CHAR_SELECT_X_START + CHAR_SELECT_X_DELTA * index,
-							CHAR_SELECT_Y, makeTexture(buttonPath, 0.5f),
-							me, (button) -> {doSelect(index);});
-					me.addButton(customCharacterButton);
+					ModButton customCharacterButton = makeCharacterButton(index, playerKey, me);
+					me.addUIElement(customCharacterButton);
+					index++;
 				}
 				
 				// setup hitboxes for mod list add and remove buttons
@@ -453,29 +458,29 @@ public class CustomClimb implements PostInitializeSubscriber {
 			// header
 			ModLabel header = new ModLabel(HEADER_TEXT, HEADER_X, HEADER_Y,
 					Settings.GOLD_COLOR, FontHelper.charTitleFont, climbPanel, (me) -> {});
-			climbPanel.addLabel(header);
+			climbPanel.addUIElement(header);
 			
 			// possible mods header
 			ModLabel possibleModsHeader = new ModLabel(POSSIBLE_MODS_HEADER_TEXT,
 					POSSIBLE_MODS_HEADER_X, POSSIBLE_MODS_HEADER_Y, Settings.GOLD_COLOR,
 					FontHelper.charDescFont, climbPanel, (me) -> {});
-			climbPanel.addLabel(possibleModsHeader);
+			climbPanel.addUIElement(possibleModsHeader);
 			
 			// applied mods header
 			ModLabel appliedModsHeader = new ModLabel(APPLIED_MODS_HEADER_TEXT,
 					APPLIED_MODS_HEADER_X, APPLIED_MODS_HEADER_Y, Settings.GOLD_COLOR,
 					FontHelper.charDescFont, climbPanel, (me) -> {});
-			climbPanel.addLabel(appliedModsHeader);
+			climbPanel.addUIElement(appliedModsHeader);
 			
 			// page labels
 			possiblePageLabel = new ModLabel(buildPossiblePageText(), POSSIBLE_PAGE_TEXT_X,
 					POSSIBLE_PAGE_TEXT_Y, Settings.GOLD_COLOR, FontHelper.charDescFont,
 					climbPanel, (me) -> {});
-			climbPanel.addLabel(possiblePageLabel);
+			climbPanel.addUIElement(possiblePageLabel);
 			appliedPageLabel = new ModLabel(buildAppliedPageText(), APPLIED_PAGE_TEXT_X,
 					APPLIED_PAGE_TEXT_Y, Settings.GOLD_COLOR, FontHelper.charDescFont,
 					climbPanel, (me) -> {});
-			climbPanel.addLabel(appliedPageLabel);
+			climbPanel.addUIElement(appliedPageLabel);
 			
 			// page select arrow
 			ModButton arrowLeftPossible = new ModButton(
@@ -489,7 +494,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 						}
 						possiblePageLabel.text = buildPossiblePageText();
 					});
-			climbPanel.addButton(arrowLeftPossible);
+			climbPanel.addUIElement(arrowLeftPossible);
 			ModButton arrowRightPossible = new ModButton(
 					POSSIBLE_MODS_RIGHT_ARROW_X,
 					POSSIBLE_MODS_RIGHT_ARROW_Y,
@@ -504,7 +509,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 						}
 						possiblePageLabel.text = buildPossiblePageText();
 					});
-			climbPanel.addButton(arrowRightPossible);
+			climbPanel.addUIElement(arrowRightPossible);
 			ModButton arrowLeftApplied= new ModButton(
 					APPLIED_MODS_LEFT_ARROW_X,
 					APPLIED_MODS_LEFT_ARROW_Y,
@@ -516,7 +521,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 						}
 						appliedPageLabel.text = buildAppliedPageText();
 					});
-			climbPanel.addButton(arrowLeftApplied);
+			climbPanel.addUIElement(arrowLeftApplied);
 			ModButton arrowRightApplied = new ModButton(
 					APPLIED_MODS_RIGHT_ARROW_X,
 					APPLIED_MODS_RIGHT_ARROW_Y,
@@ -531,7 +536,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 						}
 						appliedPageLabel.text = buildAppliedPageText();
 					});
-			climbPanel.addButton(arrowRightApplied);
+			climbPanel.addUIElement(arrowRightApplied);
 			
 			// seed select button
 			ModButton seedButton = new ModButton(
@@ -546,7 +551,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 							System.out.println("seed was set to " + this.seed);
 						});
 					});
-			climbPanel.addButton(seedButton);
+			climbPanel.addUIElement(seedButton);
 			
 			// chaotic random button
 			ModButton chaoticRandomButton = new ModButton(
@@ -560,7 +565,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 							randomizeMods(modAmount, false);
 						});
 					});
-			climbPanel.addButton(chaoticRandomButton);
+			climbPanel.addUIElement(chaoticRandomButton);
 			
 			// balanced random button
 			ModButton balancedRandomButton = new ModButton(
@@ -574,7 +579,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 							randomizeMods(modAmount, true);
 						});
 					});
-			climbPanel.addButton(balancedRandomButton);
+			climbPanel.addUIElement(balancedRandomButton);
 			
 			// register mod badge
 			BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, climbPanel);
