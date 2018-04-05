@@ -41,7 +41,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 
 	private static final String MODNAME = "CustomClimb";
 	private static final String AUTHOR = "test447";
-	private static final String DESCRIPTION = "v0.0.1\n Adds a new Custom Climb mode like the Daily Mode but where you get to choose your modifiers.";
+	private static final String DESCRIPTION = "Adds a new Custom Climb mode like the Daily Mode but where you get to choose your modifiers.";
 
 	private static final String ASSETS_FOLDER = "img";
 
