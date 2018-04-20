@@ -2,6 +2,7 @@ package customclimb;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -168,6 +169,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 	
 	private ArrayList<AbstractDailyMod> possibleMods;
 	private ArrayList<AbstractDailyMod> appliedMods = new ArrayList<>();
+	private HashMap<AbstractDailyMod, Boolean> reallyPositive = new HashMap<>();
 	private ArrayList<Hitbox> possibleHB = new ArrayList<>();
 	private ArrayList<Hitbox> appliedHB = new ArrayList<>();
 	private int possiblePage = 0;
@@ -331,7 +333,9 @@ public class CustomClimb implements PostInitializeSubscriber {
 			
 			for (Map.Entry<String, AbstractDailyMod> m :
 				((Map<String, AbstractDailyMod>) modsField.get(null)).entrySet()) {
-				possibleMods.add(m.getValue());
+				AbstractDailyMod mod = m.getValue();
+				reallyPositive.put(mod, false);
+				possibleMods.add(mod);
 			}
 			
 			Field positiveModsField;
@@ -340,7 +344,9 @@ public class CustomClimb implements PostInitializeSubscriber {
 			
 			for (Map.Entry<String, AbstractDailyMod> m :
 				((Map<String, AbstractDailyMod>) positiveModsField.get(null)).entrySet()) {
-				possibleMods.add(m.getValue());
+				AbstractDailyMod mod = m.getValue();
+				reallyPositive.put(mod, true);
+				possibleMods.add(mod);
 			}
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			logger.error("could not read daily mod pool - leaving empty");
@@ -448,6 +454,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 				public void update() {
 					super.update();
 					confirmButton.update();
+					recalcHitboxes();
 					updateHitboxes();
 					if (confirmButton.hb.clicked) {
 						startRun();
@@ -597,7 +604,6 @@ public class CustomClimb implements PostInitializeSubscriber {
 		}
 		possiblePageLabel.text = buildPossiblePageText();
 		appliedPageLabel.text = buildAppliedPageText();
-		recalcHitboxes();
 	}
 	
 	private void updateHitboxes() {
@@ -795,7 +801,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 		DailyMods.enabledMods.clear();
 		DailyMods.enabledMods.addAll(appliedMods);
 		for (AbstractDailyMod m : appliedMods) {
-			if (m.positive) {
+			if (reallyPositive.get(m)) {
 				DailyMods.cardMods.put(m.modID, true);
 			} else {
 				DailyMods.negativeMods.put(m.modID, true);
