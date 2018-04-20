@@ -558,7 +558,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 							System.out.println("seed was set to " + this.seed);
 						});
 					});
-			climbPanel.addUIElement(seedButton);
+			//climbPanel.addUIElement(seedButton);
 			
 			// chaotic random button
 			ModButton chaoticRandomButton = new ModButton(
@@ -572,7 +572,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 							randomizeMods(modAmount, false);
 						});
 					});
-			climbPanel.addUIElement(chaoticRandomButton);
+			//climbPanel.addUIElement(chaoticRandomButton);
 			
 			// balanced random button
 			ModButton balancedRandomButton = new ModButton(
@@ -586,7 +586,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 							randomizeMods(modAmount, true);
 						});
 					});
-			climbPanel.addUIElement(balancedRandomButton);
+			//climbPanel.addUIElement(balancedRandomButton);
 			
 			// register mod badge
 			BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, climbPanel);
