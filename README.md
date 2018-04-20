@@ -9,24 +9,12 @@ To open the *Custom Climb Menu* click on the icon with the brown staircase. This
 
 On the *Modifier Select Screen* you can chose your modifiers for the run. First select a character using the Ironclad or Silent button. This will make the embark button available. The **Applied Mods** list shows what mods will be applied for your custom climb. The **Mods List** shows you all the possible mods that you can apply to your custom climb. Notice that under both lists there are left and right arrows. This is because there are more mods than can be displayed at once so you need to use the arrows to navigate to all the possible mods.
 
-![Seed Select Screen](github_resources/seed_select.png)
-
-On the *Seed Select Panel* you can chose your seed for the run. Simply type in the seed you want to use and hit confirm and the seed will be set for your run.
-
-![Balanced Random Screen](github_resources/balanced_random.png)
-
-If you like the way that the daily climb randomizes the modifiers try using the *Balance* button to bring up the *Balanced Random Panel*. This panel lets you make a run with random modifiers and ensures that 25% of the modifiers (rounded down) are positive (with a minimum of 1 positive modifier). This way you can do as many challenge runs just like the daily climbs as you want!
-
-![Chaotic Random Screen](github_resources/chaotic_random.png)
-
-If you want a bigger challenge, use the *Chaos* button to bring up the *Chaotic Random Panel*. This panel lets you make a run with completely random modifiers and no guarantees about the number of positive modifiers.
-
 ![In Game](github_resources/custom_climb_in_game.png)
 
 Once in game the custom climb will act like a daily climb. All of the mods are applied **and** you will not be able to save and quit without losing your progress.
 
 ## Known Bugs ##
-1. When using the Balanced, Chaos, and Seed buttons trying to click on accept and cancel doesn't work. The workaround is to use enter and escape instead.
+1. Some modifiers will not work properly with Custom Characters. This issue **will not** be fixed right now so there's no need to make issues about it.
 
 ## Installation ##
 1. If you have `ModTheSpire` already installed you can skip to step 5. Otherwise continue with step 2:

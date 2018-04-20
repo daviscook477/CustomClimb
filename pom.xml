@@ -3,7 +3,7 @@
 
 	<groupId>customclimb</groupId>
 	<artifactId>CustomClimb</artifactId>
-	<version>0.1.0</version>
+	<version>0.3.2</version>
 
 	<name>Custom Climb</name>
 	<description>Custom Climb mode for Slay the Spire.</description>
