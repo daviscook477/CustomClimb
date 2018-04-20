@@ -5,5 +5,6 @@
 	"description": "Adds a new Custom Climb mode into the game like the Daily Mode but where you get to chose your options.",
 	"version": "v0.3.2",
 	"mts_version": "2.6.0",
-	"dependencies": ["basemod"]
+	"dependencies": ["basemod"],
+	"update_json": "https://api.github.com/repos/daviscook477/CustomClimb/releases/latest"
 }
