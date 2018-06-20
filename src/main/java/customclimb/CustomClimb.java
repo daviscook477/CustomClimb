@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.daily.mods.Insanity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +27,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.InputHelper;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.helpers.ModHelper;
 import com.megacrit.cardcrawl.ui.buttons.ConfirmButton;
 
@@ -415,9 +417,14 @@ public class CustomClimb implements PostInitializeSubscriber {
 						makeTexture("images/ui/charSelect/silentButton.png", 0.5f),
 						me, (button) -> {doSelect(1);});
 				me.addUIElement(silent);
+
+				ModButton defect = new ModButton(CHAR_SELECT_X_START + (CHAR_SELECT_X_DELTA * 2), CHAR_SELECT_Y,
+						makeTexture("images/ui/charSelect/defectButton.png", 0.5f),
+						me, (button) -> {doSelect(2);});
+				me.addUIElement(defect);
 				
 				// custom characters
-				int index = 2; // 0 for ironclad, 1 for silent, 2+ for custom chars
+				int index = 3; // 0 for ironclad, 1 for silent, 2 for defect, 3+ for custom chars
 				keys = BaseMod.playerClassMap.keySet().toArray();
 				for (Object playerKey : keys) {
 					ModButton customCharacterButton = makeCharacterButton(index, playerKey, me);
@@ -828,8 +835,10 @@ public class CustomClimb implements PostInitializeSubscriber {
 			chosen = AbstractPlayer.PlayerClass.IRONCLAD;
 		} else if (selected == 1) {
 			chosen = AbstractPlayer.PlayerClass.THE_SILENT;
+		} else if (selected == 2) {
+			chosen = AbstractPlayer.PlayerClass.DEFECT;
 		} else {
-			int index = 2;
+			int index = 3;
 			boolean found = false;
 			for (Object playerKey : keys) {
 				if (!found && index == selected) {
@@ -838,6 +847,7 @@ public class CustomClimb implements PostInitializeSubscriber {
 				}
 				index++;
 			}
+
 			if (!found) {
 				logger.error("could not find character - running as the ironclad");
 				chosen = AbstractPlayer.PlayerClass.IRONCLAD;
