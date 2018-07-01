@@ -1,3 +1,5 @@
+With the addition of "Custom Mode" to the base game, this is currently no longer being maintained.
+
 # Custom Climb #
 Custom Climb lets you do challenge runs how **you** want to do them not how the randomized daily runs do. When playing in Custom Climb mode you get to **choose** which positive and negative modifiers are going to effect your run and which character you want to play as.
 
